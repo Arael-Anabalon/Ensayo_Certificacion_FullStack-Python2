@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-6 bg-white p-4 rounded shadow-sm">
+        <h3 class="fw-bold mb-3">Editar Tarea</h3>
+
+        {% with messages = get_flashed_messages(category_filter=["tarea"]) %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger py-2">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/tareas/actualizar" method="POST">
+            <input type="hidden" name="id_tarea" value="{{ tarea.id_tarea }}">
+
+            <div class="mb-3">
+                <label class="form-label">Título:</label>
+                <input type="text" name="titulo" class="form-control" value="{{ tarea.titulo }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Categoría:</label>
+                <select name="categoria" class="form-select" required>
+                    {% for cat in categorias %}
+                    <option value="{{ cat.id_categoria }}" {% if cat.id_categoria==tarea.categoria %}selected{% endif
+                        %}>{{ cat.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Prioridad:</label>
+                <select name="prioridad" class="form-select" required>
+                    <option value="1" {% if tarea.prioridad==1 %}selected{% endif %}>Alta</option>
+                    <option value="2" {% if tarea.prioridad==2 %}selected{% endif %}>Media</option>
+                    <option value="3" {% if tarea.prioridad==3 %}selected{% endif %}>Baja</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Estado:</label>
+                <select name="estado" class="form-select" required>
+                    <option value="1" {% if tarea.estado==1 %}selected{% endif %}>Pendiente</option>
+                    <option value="2" {% if tarea.estado==2 %}selected{% endif %}>En progreso</option>
+                    <option value="3" {% if tarea.estado==3 %}selected{% endif %}>Completada</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fecha límite:</label>
+                <input type="date" name="fecha_limite" class="form-control" value="{{ tarea.fecha_limite }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descripción:</label>
+                <textarea name="descripcion" class="form-control" rows="3">{{ tarea.descripcion }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Actualizar</button>
+            <a href="/tareas" class="btn btn-light border">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

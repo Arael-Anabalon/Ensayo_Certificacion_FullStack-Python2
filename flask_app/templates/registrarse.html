@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="row justify-content-center mt-5">
+    <div class="d-flex justify-content-center py-4">
+        <a href="#" class="navbar-brand d-flex align-items-center gap-3 text-decoration-none">
+            <i class="bi bi-check-square-fill text-dark display-3 m-0"></i>
+            <div class="d-flex flex-column justify-content-center">
+                <span class="fs-2 fw-bold text-dark lh-1">TaskTrack</span>
+                <p class="text-muted small m-0 pt-1" style="font-size: 0.75rem;">Organiza tus tareas y proyectos</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-5 bg-white p-4 rounded shadow-sm">
+        <h3 class="fw-bold text-center mb-3">Crear Cuenta</h3>
+
+        {% with messages = get_flashed_messages(category_filter=["registro"]) %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger py-2">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/usuarios/registrar" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Nombre:</label>
+                <input type="text" name="nombre" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Apellido:</label>
+                <input type="text" name="apellido" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">E-mail:</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña:</label>
+                <input type="password" name="contrasena" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 mb-2">Registrarse</button>
+            <a href="/iniciar-sesion" class="d-block text-center text-decoration-none small">¿Ya tienes cuenta? Inicia
+                sesión</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

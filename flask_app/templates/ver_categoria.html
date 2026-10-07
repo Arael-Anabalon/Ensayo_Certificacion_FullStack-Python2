@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h3 class="fw-bold mb-3">{{ categoria.nombre }}</h3>
+        <div class="card shadow-sm bg-white">
+            <div class="card-body p-4">
+                <table class="table table-borderless align-middle m-0">
+                    <tbody>
+                        <tr>
+                            <td class="ps-0" style="width: 40px;">
+                                <i class="bi bi-tag-fill text-muted fs-5"></i>
+                            </td>
+                            <td style="width: 150px;">
+                                <span class="small fw-bold text-muted">Categoría</span>
+                            </td>
+                            <td class="text-dark">{{ categoria.nombre }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-list-task text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Tareas Asociadas</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ categoria.cantidad_tareas if
+                                    categoria.cantidad_tareas else 0 }} tareas</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-clock-fill text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Creado el</span>
+                            </td>
+                            <td class="text-dark">{{ categoria.fecha_creacion }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0 align-top pt-2">
+                                <i class="bi bi-justify-left text-muted fs-5"></i>
+                            </td>
+                            <td class="align-top pt-2">
+                                <span class="small fw-bold text-muted">Descripción</span>
+                            </td>
+                            <td class="text-dark text-wrap">{{ categoria.descripcion if categoria.descripcion else 'Sin
+                                descripción disponible.' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4 justify-content-between">
+            <a href="/categorias/editar/{{ categoria.id_categoria }}" class="btn btn-primary px-4">Editar</a>
+            <a href="/categorias/borrar/{{ categoria.id_categoria }}" class="btn btn-danger px-4">Borrar</a>
+        </div>
+        <div class="mt-4">
+            <a href="/categorias">Volver a Categorías</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<section class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold">Mis Tareas</h2>
+            <a href="/tareas/nueva" class="btn btn-primary">+ Nueva Tarea</a>
+        </div>
+
+        <form action="/tareas" method="GET" class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="buscar" class="form-control" placeholder="Título de la tarea..."
+                        value="{{ buscar_sel }}">
+                </div>
+                <div class="col-md-2">
+                    <select name="categoria" class="form-select">
+                        <option value="todos" {% if categoria_sel=='todos' %}selected{% endif %}>Todas las categorías
+                        </option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat.id_categoria }}" {% if categoria_sel==cat.id_categoria|string %}selected{%
+                            endif %}>{{ cat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="prioridad" class="form-select">
+                        <option value="todos" {% if prioridad_sel=='todos' %}selected{% endif %}>Todas las prioridades
+                        </option>
+                        <option value="Alta" {% if prioridad_sel=='Alta' %}selected{% endif %}>Alta</option>
+                        <option value="Media" {% if prioridad_sel=='Media' %}selected{% endif %}>Media</option>
+                        <option value="Baja" {% if prioridad_sel=='Baja' %}selected{% endif %}>Baja</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="estado" class="form-select">
+                        <option value="todos" {% if estado_sel=='todos' %}selected{% endif %}>Todos los estados</option>
+                        <option value="Pendiente" {% if estado_sel=='Pendiente' %}selected{% endif %}>Pendiente</option>
+                        <option value="En progreso" {% if estado_sel=='En progreso' %}selected{% endif %}>En progreso
+                        </option>
+                        <option value="Completada" {% if estado_sel=='Completada' %}selected{% endif %}>Completada
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <div class="btn-group w-100">
+                        <button type="submit" class="btn btn-dark">Filtrar</button>
+                        {% if buscar_sel or categoria_sel != 'todos' or prioridad_sel != 'todos' or estado_sel !=
+                        'todos' %}
+                        <a href="/tareas" class="btn btn-light border">Limpiar</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-bordered bg-white shadow-sm" id="tabla_tareas">
+            <thead class="table-light">
+                <tr>
+                    <th>Título</th>
+                    <th>Categoría</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Fecha Límite</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tareas %}
+                <tr>
+                    <td class="fw-semibold">{{ t.titulo }}</td>
+                    <td>{{ t.nombre_categoria }}</td>
+                    <td>
+                        {% if t.nombre_prioridad == 'Alta' %}
+                        <span class="badge bg-danger">Alta</span>
+                        {% elif t.nombre_prioridad == 'Media' %}
+                        <span class="badge bg-primary text-white">Media</span>
+                        {% else %}
+                        <span class="badge bg-success text-white">Baja</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if t.nombre_estado == 'Completada' %}
+                        <span class="badge bg-success">Completada</span>
+                        {% elif t.nombre_estado == 'En progreso' %}
+                        <span class="badge bg-primary">En progreso</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ t.fecha_limite }}</td>
+                    <td>
+                        <a href="/tareas/{{ t.id_tarea }}" class="btn btn-sm btn-link p-0 me-2">Ver</a>
+                        <a href="/tareas/editar/{{ t.id_tarea }}" class="btn btn-sm btn-link p-0 me-2">Editar</a>
+                        <a href="/tareas/eliminar/{{ t.id_tarea }}"
+                            class="btn btn-sm btn-link p-0 text-danger">Borrar</a>
+                    </td>
+
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-3">No se encontraron tareas que coincidan con los
+                        filtros aplicados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="row">
+    <div class="col-md-8 mb-4">
+        <h5 class="fw-bold mb-3">Próximas tareas</h5>
+        <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Título</th>
+                    <th>Fecha Límite</th>
+                    <th>Días Restantes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set proximas = tareas | rejectattr('nombre_estado', 'equalto', 'Completada') |
+                sort(attribute='fecha_limite') %}
+                {% for t in proximas[:3] %}
+                <tr>
+                    <td class="fw-semibold text-dark">{{ t.titulo }}</td>
+                    <td>{{ t.fecha_limite }}</td>
+                    <td>
+                        {% if t.dias_restantes == 'Vencida' %}
+                        <span class="badge bg-danger text-white">Vencida</span>
+                        {% elif t.dias_restantes == 'Hoy' %}
+                        <span class="badge bg-warning text-dark border">Hoy</span>
+                        {% else %}
+                        <span class="badge bg-light text-dark border">{{ t.dias_restantes }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-3 small">No tienes tareas pendientes próximas a
+                        vencer.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card p-3 shadow-sm bg-white h-100">
+            <h5 class="fw-bold mb-3">Resumen</h5>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Total de tareas</span>
+                <span class="fw-bold" id="total_tareas">{{ tareas|length }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Pendientes</span>
+                <span class="fw-bold" id="total_pendientes">
+                    {{ tareas | selectattr('nombre_estado', 'equalto', 'Pendiente') | list | length }}
+                </span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">En progreso</span>
+                <span class="fw-bold" id="total_progreso">
+                    {{ tareas | selectattr('nombre_estado', 'equalto', 'En progreso') | list | length }}
+                </span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Completadas</span>
+                <span class="fw-bold" id="total_completadas">
+                    {{ tareas | selectattr('nombre_estado', 'equalto', 'Completada') | list | length }}
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

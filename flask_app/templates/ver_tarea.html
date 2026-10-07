@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h3 class="fw-bold mb-3">{{ tarea.titulo }}</h3>
+        <div class="card shadow-sm bg-white">
+            <div class="card-body p-4">
+                <table class="table table-borderless align-middle m-0">
+                    <tbody>
+                        <tr>
+                            <td class="ps-0" style="width: 40px;">
+                                <i class="bi bi-tag-fill text-muted fs-5"></i>
+                            </td>
+                            <td style="width: 150px;">
+                                <span class="small fw-bold text-muted">Categoría</span>
+                            </td>
+                            <td class="text-dark">{{ tarea.nombre_categoria }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-exclamation-triangle-fill text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Prioridad</span>
+                            </td>
+                            <td>
+                                {% if tarea.nombre_prioridad == 'Alta' %}
+                                <span class="badge bg-danger">Alta</span>
+                                {% elif tarea.nombre_prioridad == 'Media' %}
+                                <span class="badge bg-primary text-white">Media</span>
+                                {% else %}
+                                <span class="badge bg-success text-white">Baja</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-info-circle-fill text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Estado</span>
+                            </td>
+                            <td>
+                                {% if tarea.nombre_estado == 'Completada' %}
+                                <span class="badge bg-success">Completada</span>
+                                {% elif tarea.nombre_estado == 'En progreso' %}
+                                <span class="badge bg-primary">En progreso</span>
+                                {% else %}
+                                <span class="badge bg-warning">Pendiente</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-calendar-event-fill text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Fecha Límite</span>
+                            </td>
+                            <td class="text-dark">{{ tarea.fecha_limite }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0">
+                                <i class="bi bi-clock-fill text-muted fs-5"></i>
+                            </td>
+                            <td>
+                                <span class="small fw-bold text-muted">Creado el</span>
+                            </td>
+                            <td class="text-dark">{{ tarea.fecha_creacion }}</td>
+                        </tr>
+                        <tr>
+                            <td class="ps-0 align-top pt-2">
+                                <i class="bi bi-justify-left text-muted fs-5"></i>
+                            </td>
+                            <td class="align-top pt-2">
+                                <span class="small fw-bold text-muted">Descripción</span>
+                            </td>
+                            <td class="text-dark text-wrap">{{ tarea.descripcion if tarea.descripcion else 'Sin
+                                descripción.' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-4 justify-content-between">
+            <a href="/tareas/editar/{{ tarea.id_tarea }}" class="btn btn-primary px-4">Editar</a>
+            {% if tarea.nombre_estado == 'Completada' %}
+            <a href="/tareas/desmarcar/{{ tarea.id_tarea }}" class="btn btn-warning px-4">Desmarcar completado</a>
+            {% else %}
+            <a href="/tareas/completar/{{ tarea.id_tarea }}" class="btn btn-success px-4">Marcar como completada</a>
+            {% endif %}
+            <a href="/tareas/eliminar/{{ tarea.id_tarea }}" class="btn btn-danger px-4">Borrar</a>
+        </div>
+        <div class="mt-4">
+            <a href="/tareas">Volver a Mis Tareas</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
